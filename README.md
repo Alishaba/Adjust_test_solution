@@ -18,13 +18,13 @@ Get result as defined in test task description
 1. Using SQL query 
 ```bash
 curl --request GET \
-  --url http://localhost:5000/by-query
+  --url http://0.0.0.0:5000/by-query
 ```
 
 2. Using SQLAlchemy and ORM
 ```bash
 curl --request GET \
-  --url http://localhost:5000/by-orm
+  --url http://0.0.0.0:5000/by-orm
 ```
 
 ## Response
