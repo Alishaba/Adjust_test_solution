@@ -1,5 +1,4 @@
 import uuid
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import psycopg2
@@ -17,10 +16,10 @@ postgres_db = {'drivername': 'postgres',
                'username': 'postgres',
                'host': 'localhost',
                'port': 5422}
-db_uri = URL(**postgres_db)  # "sqlite:///db.sqlite"
+db_uri = URL(**postgres_db)
 engine = create_engine(db_uri, echo=False)
 
-# Obtain results by ORM
+# Connect and obtain results by ORM
 conn = engine.connect()
 trans = conn.begin()
 meta = MetaData()
@@ -33,8 +32,8 @@ query = select(
     "Sum_of_paid_installs")
 ResultProxy = conn.execute(query)
 ResultSet = ResultProxy.fetchall()
-df = pd.DataFrame(ResultSet, columns=ResultProxy.keys())
 
+df = pd.DataFrame(ResultSet, columns=ResultProxy.keys())
 df.plot(kind='bar', ylim=(0.95 * min(df['Sum_of_paid_installs']), 1.05 * max(df['Sum_of_paid_installs'])),
         figsize=(20, 10))
 plt.ylabel('Amount of paid installs in May 2019')
@@ -42,16 +41,18 @@ plt.xlabel('country')
 plt.xticks(df.index, df.country)
 plt.show()
 
-# Obtain results by SQL query
+# Connect and obtain results by SQL query
 conn2 = psycopg2.connect(host="localhost", port='5422', database='postgres', user='postgres')
 cur = conn2.cursor()
 cur.execute("SELECT country, SUM(installs) AS Sum_of_paid_installs FROM installs_by_country WHERE "
             "((created_at LIKE '2019-05%') AND (paid=True)) GROUP BY country ORDER BY Sum_of_paid_installs")
 rows = cur.fetchall()
+
 df2 = pd.DataFrame(rows, columns=['columns', 'Sum_of_paid_installs'])
 
 cur.close()
 
+# Create a web server with Flask
 app = Flask(__name__, static_url_path='/files', static_folder='files')
 
 
