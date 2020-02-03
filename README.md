@@ -5,10 +5,11 @@
 Please ensure that `docker` and `docker-compose` are available in your system.
 
 
-## One-click launch
+## Two-click launch
 
 ```bash
-bin/run-all.sh
+bin/start_cluster.sh
+bin/load_data.sh
 ```
 
 ## Examples
